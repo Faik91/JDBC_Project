@@ -40,7 +40,5 @@ public class Main {
         userDaoJDBC.cleanUsersTable();
         userDaoJDBC.dropUsersTable();
 
-
-
     }
 }

@@ -1,28 +1,25 @@
 package jm.task.core.jdbc.dao;
 
+
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private Util util = new Util();
-    private Connection connection = util.getConnection();
-    private Statement statement;
-    private ResultSet resultSet;
+
+    private Connection connection = new Util().getConnection();
+
 
     public UserDaoJDBCImpl() {
     }
 
     public void createUsersTable() {
         try {
-            statement = connection.createStatement();
-            statement.executeUpdate("CREATE TABLE users (id INT  PRIMARY KEY AUTO_INCREMENT, name VARCHAR (30), lastName VARCHAR (30), age INT) ");
+           PreparedStatement statement = connection.prepareStatement("CREATE TABLE users (id INT  PRIMARY KEY AUTO_INCREMENT, name VARCHAR (30), lastName VARCHAR (30), age INT) ");
+           statement.executeLargeUpdate();
         } catch (SQLException s) {
 
         }
@@ -31,8 +28,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         try {
-            statement = connection.createStatement();
-            statement.executeUpdate("DROP TABLE users");
+            PreparedStatement statement = connection.prepareStatement("DROP TABLE users");
+            statement.executeLargeUpdate();
         } catch (SQLException s) {
 
         }
@@ -41,8 +38,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
         try {
-            statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO users (name, lastName, age) VALUES (" + "'" + name + "'" + "," + "'" + lastName + "'" + "," + age + ")");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO users (name, lastName, age) VALUES (" + "'" + name + "'" + "," + "'" + lastName + "'" + "," + age + ")");
+            statement.executeLargeUpdate();
         } catch (SQLException s) {
             s.printStackTrace();
         }
@@ -51,8 +48,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void removeUserById(long id) {
         try {
-            statement = connection.createStatement();
-            statement.executeUpdate("DELETE FROM users WHERE id =" + id);
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM users WHERE id =" + id);
+            statement.executeLargeUpdate();
         } catch (SQLException s) {
             s.printStackTrace();
         }
@@ -63,8 +60,8 @@ public class UserDaoJDBCImpl implements UserDao {
         List<User> list = new ArrayList<>();
 
         try {
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM users");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users");
+            ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()){
                 User user = new User();
@@ -83,8 +80,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
         try{
-            statement = connection.createStatement();
-            statement.executeUpdate("DELETE FROM users");
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM users");
+            statement.executeLargeUpdate();
         }catch (SQLException s){
             s.printStackTrace();
         }
